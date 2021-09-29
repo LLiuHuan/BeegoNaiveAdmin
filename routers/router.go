@@ -8,23 +8,30 @@
 package routers
 
 import (
-	"BeegoNaiveAdmin/controllers"
+	v1 "BeegoNaiveAdmin/controllers/v1"
+	"fmt"
+
+	"github.com/beego/beego/v2/server/web/context"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
+		beego.NSNamespace("/auth",
 			beego.NSInclude(
-				&controllers.ObjectController{},
+				&v1.LoginController{},
 			),
 		),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
+		//beego.NSNamespace("/user",
+		//	beego.NSInclude(
+		//		&controllers.UserController{},
+		//	),
+		//),
 	)
+	beego.InsertFilter("/*", beego.BeforeRouter, func(ctx *context.Context) {
+		fmt.Println(ctx.Request)
+		fmt.Println(ctx.Request.URL)
+	})
 	beego.AddNamespace(ns)
 }
